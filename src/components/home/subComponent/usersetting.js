@@ -10,8 +10,7 @@ import {
     Title
 } from 'native-base';
 
-export default class StaffScreen extends React.Component {
-
+export default class UserSettingsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.fnopenDrawer = this.fnopenDrawer.bind(this);
@@ -32,7 +31,7 @@ export default class StaffScreen extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>Staff</Title>
+                    <Title>Users Settings</Title>
                 </Body>
                 <Right/>
             </Header>

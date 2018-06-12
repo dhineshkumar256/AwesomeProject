@@ -13,16 +13,12 @@ import {
   Right,
   Icon,
   Form,
-  Text, Toast
+  Text
 } from "native-base";
-import { createStackNavigator } from 'react-navigation';
 
 export default class Login extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      showToast: false
-    };
     this.happylogin = this.happylogin.bind(this);
     this.state = {
       username : '',

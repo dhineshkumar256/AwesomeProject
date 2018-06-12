@@ -9,9 +9,7 @@ import {
     Right,
     Title
 } from 'native-base';
-
-export default class StaffScreen extends React.Component {
-
+export default class OrderScreen extends React.Component {
   constructor(props) {
     super(props);
     this.fnopenDrawer = this.fnopenDrawer.bind(this);
@@ -22,7 +20,7 @@ export default class StaffScreen extends React.Component {
   }
 
   render() {
-     return(
+      return(
         <Container>
             <Header>
                 <Left>
@@ -32,7 +30,7 @@ export default class StaffScreen extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>Staff</Title>
+                    <Title>Orders</Title>
                 </Body>
                 <Right/>
             </Header>

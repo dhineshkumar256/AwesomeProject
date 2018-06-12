@@ -2,7 +2,6 @@ import React from 'react';
 import { ImageBackground, View, StatusBar } from "react-native";
 import { Container, Button, H3, Text } from "native-base";
 import { Grid, Row } from "react-native-easy-grid";
-import { createStackNavigator } from 'react-navigation';
 import styles from "./styles";
 
 const launchscreenBg = require("../../assets/images/launchscreen-bg.png");

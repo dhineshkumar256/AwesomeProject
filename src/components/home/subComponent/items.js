@@ -3,14 +3,14 @@ import {
     Container,
     Header,
     Left,
-    Button,
     Icon,
+    Button,
     Body,
-    Right,
-    Title
+    Title,
+    Right
 } from 'native-base';
 
-export default class StaffScreen extends React.Component {
+export default class ItemScreen extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,7 +22,7 @@ export default class StaffScreen extends React.Component {
   }
 
   render() {
-     return(
+      return(
         <Container>
             <Header>
                 <Left>
@@ -32,7 +32,7 @@ export default class StaffScreen extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>Staff</Title>
+                    <Title>Items</Title>
                 </Body>
                 <Right/>
             </Header>
