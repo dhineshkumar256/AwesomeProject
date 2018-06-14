@@ -7,7 +7,9 @@ import {
     Icon,
     Body,
     Right,
-    Title
+    Title,
+    Content,
+    Text
 } from 'native-base';
 
 export default class UserSettingsScreen extends React.Component {
@@ -35,6 +37,9 @@ export default class UserSettingsScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
+            <Content>
+                <Text>Users Settings screen</Text>
+            </Content>
         </Container>
     )
   }

@@ -19,7 +19,7 @@ const DrawerNav = createDrawerNavigator(
     },
     {
         contentOptions: {
-            activeTintColor: "#e91e63"
+            activeTintColor: "#eb8a33"
         },
         contentComponent: props => <SideBar {...props} />
     }

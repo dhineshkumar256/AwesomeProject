@@ -7,7 +7,9 @@ import {
     Icon,
     Body,
     Right,
-    Title
+    Title,
+    Content,
+    Text
 } from 'native-base';
 export default class OrderScreen extends React.Component {
   constructor(props) {
@@ -34,6 +36,9 @@ export default class OrderScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
+            <Content>
+                <Text>Order screen</Text>
+            </Content>
         </Container>
     )
   }

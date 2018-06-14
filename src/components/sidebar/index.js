@@ -9,7 +9,8 @@ import {
   Container,
   Left,
   Right,
-  Badge
+  Thumbnail,
+  View
 } from "native-base";
 import styles from "./style";
 
@@ -37,15 +38,21 @@ const datas = [
   {
     name: "User Settings",
     route: "UserSettings",
-    icon: "md-settings",
+    icon: "md-build",
     bg: "#DA4437",
   },
   {
     name: "Settings",
     route: "Settings",
-    icon: "md-man",
+    icon: "md-settings",
     bg: "#DA4437",
-  }
+    },
+    {
+        name: "Log Out",
+        route: "login",
+        icon: "md-log-out",
+        bg: "#DA4437",
+    }
 ];
 
 class SideBar extends Component {
@@ -58,14 +65,18 @@ class SideBar extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const username = navigation.getParam("username");
     return (
       <Container>
         <Content
           bounces={false}
           style={{ flex: 1, backgroundColor: "#fff", top: -1 }}
         >
-          <Image source={drawerCover} style={styles.drawerCover} />
-
+            <View style={styles.drawerCover}>
+                <Thumbnail large source={drawerCover} style={{margin:20}} />
+                <Text style={styles.username}>{username}</Text>
+            </View>
           <List
             dataArray={datas}
             renderRow={data =>

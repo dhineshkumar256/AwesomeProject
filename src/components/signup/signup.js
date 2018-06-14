@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, ScrollView } from 'react-native';
 import {
     Container,
     Header,
@@ -15,10 +15,11 @@ import {
     Icon,
     Form,
     Text,
-    Spinner
+    Spinner,
+    Card,
+    Picker
         } from "native-base";
-import { createStackNavigator } from 'react-navigation';
-import renderIf from '../custom/renderIf';
+import styles from "./style";
 
 export default class Signup extends React.Component {
 
@@ -30,13 +31,18 @@ export default class Signup extends React.Component {
         this.state = {
             email : '',
             password : '',
-            firstname : '',
+            restname : '',
             lastname : '',
             signupLoading : false,
             showPassword : true,
-            emailerrorMsg : false,
-            PassworderrorMsg : false
+            selected: "key1"
         };
+    }
+
+    onValueChange(value: string) {
+        this.setState({
+          selected: value
+        });
     }
 
     showPassword() {
@@ -56,19 +62,11 @@ export default class Signup extends React.Component {
             case "email":
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
                 if(reg.test(val) === false) {
-                    this.setState({
-                        email : val,
-                        emailerrorMsg : true
-                    });
-                }else{
-                    this.setState({
-                        email : val,
-                        emailerrorMsg : false
-                    });
+
                 }
             break;
             case "password":
-                if(this.state.password <= 0) {
+                if(this.state.password != 0) {
                     this.setState({
                         password : val,
                         PassworderrorMsg : true
@@ -88,7 +86,7 @@ export default class Signup extends React.Component {
         this.setState({
             signupLoading : true
         });
-        const { firstname }  = this.state;
+        const { restname }  = this.state;
         const { email }  = this.state;
         const { password }  = this.state;
 
@@ -99,7 +97,7 @@ export default class Signup extends React.Component {
                 'Content-Type' : 'application/json'
             },
             body : JSON.stringify({
-                name : firstname,
+                name : restname,
                 email : email,
                 password : password
             })
@@ -139,64 +137,72 @@ export default class Signup extends React.Component {
                     </Body>
                     <Right />
                 </Header>
+                <KeyboardAvoidingView style={{flex:1}} behaviour="margin" enabled>
+                <ScrollView>
                 <Content>
-                    <Form>
-                        <Item error={false} floatingLabel>
-                            <Label>Email</Label>
-                            <Input
-                                onChangeText={(email) => this.FormValidation("email",email)}
-                                value={this.state.email}
-                            />
-                        </Item>
-                        {renderIf(this.state.emailerrorMsg,
-                            <Text style={{paddingLeft:15,color:"red"}}>Invalid E-mail Address!!</Text>
-                        )}
-                        <Item floatingLabel>
-                            <Label>Password</Label>
-                            <Input secureTextEntry = {this.state.showPassword}
-                                onChangeText={(password) => this.FormValidation("password",password)}
-                                value={this.state.password}
-                            />
-                            <Icon onPress={this.showPassword} name="eye" style={this.state.showPassword ? style.hide : style.show}/>
-                        </Item>
-                        {renderIf(this.state.PassworderrorMsg,
-                            <Text style={{paddingLeft:15,color:"red"}}>Password Required!!</Text>
-                        )}
-                        <Item floatingLabel>
-                            <Label>First Name</Label>
-                            <Input
-                                onChangeText={(firstname) => this.setState({firstname})}
-                                value={this.state.firstname}
-                            />
-                        </Item>
-                        {renderIf(this.state.errorMsg,
-                            <Text style={{paddingLeft:15,color:"red"}}>Error Msg Field!!</Text>
-                        )}
-                        <Item floatingLabel last>
-                            <Label>Last Name</Label>
-                            <Input
-                                onChangeText={(lastname) => this.setState({lastname})}
-                                value={this.state.lastname}
-                            />
-                        </Item>
-                    </Form>
-                    <Button block
-                        style={{ margin: 15, marginTop: 50 }}
-                        onPress={this.FormValidation}
-                    >
-                        {this.state.signupLoading ?
-                            <Spinner color='white' /> :
-                            <Text>Sign Up</Text>
-                        }
-                    </Button>
+                    <Card style={styles.signupcard}>
+                        <Icon name="md-bowtie" style={styles.signupcardIcon}></Icon>
+                        <Form>
+                            <Item error={false} floatingLabel>
+                                <Label>Email</Label>
+                                <Input
+                                    onChangeText={(email) => this.FormValidation("email",email)}
+                                    value={this.state.email}
+                                />
+                            </Item>
+                            <Item floatingLabel>
+                                <Label>Password</Label>
+                                <Input secureTextEntry = {this.state.showPassword}
+                                    onChangeText={(password) => this.FormValidation("password",password)}
+                                    value={this.state.password}
+                                />
+                                <Icon onPress={this.showPassword} name="eye" style={this.state.showPassword ? styles.hide : styles.show}/>
+                            </Item>
+                            <Item floatingLabel>
+                                <Label>Restaurant Name</Label>
+                                <Input
+                                    onChangeText={(restname) => this.setState({restname})}
+                                    value={this.state.restname}
+                                />
+                            </Item>
+                            <Item style={{marginTop: 10}}>
+                                <Picker
+                                  mode="dropdown"
+                                  iosHeader="Select your Country"
+                                  iosIcon={<Icon name="ios-arrow-down-outline" />}
+                                  style={{ width: undefined }}
+                                  textStyle={{ color: "#5cb85c" }}
+                                  itemStyle={{
+                                    backgroundColor: "#d3d3d3",
+                                    marginLeft: 0,
+                                    paddingLeft: 10
+                                  }}
+                                  itemTextStyle={{ color: '#788ad2' }}
+                                  selectedValue={this.state.selected}
+                                  onValueChange={this.onValueChange.bind(this)}
+                                >
+                                      <Picker.Item label="USA" value="key0" />
+                                      <Picker.Item label="UK" value="key1" />
+                                      <Picker.Item label="IND" value="key2" />
+                                      <Picker.Item label="AUS" value="key3" />
+                                      <Picker.Item label="CHINA" value="key4" />
+                                </Picker>
+                            </Item>
+                        </Form>
+                        <Button block
+                            style={{ margin: 15, marginTop: 50 }}
+                            onPress={this.FormValidation}
+                        >
+                            {this.state.signupLoading ?
+                                <Spinner color='white' /> :
+                                <Text>Sign Up</Text>
+                            }
+                        </Button>
+                    </Card>
                 </Content>
+                </ScrollView>
+                </KeyboardAvoidingView>
             </Container>
         )
     }
 }
-
-const style = StyleSheet.create({
-    show: {
-        color : "#3b5bb2"
-    }
-});

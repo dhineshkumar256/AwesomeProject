@@ -1,7 +1,8 @@
 import React from 'react';
-import { Root, Container } from "native-base";
+import { Root, Container, StyleProvider } from "native-base";
+import getTheme from './native-base-theme/components';
+import platform from './native-base-theme/variables/platform';
 import { Font, AppLoading } from "expo";
-import {  } from 'native-base';
 import RootStack from './src/route/route';
 
 export default class App extends React.Component {
@@ -27,9 +28,11 @@ export default class App extends React.Component {
     }
     return (
         <Root>
-            <Container style={{marginTop: 24}}>
-                <RootStack />
-            </Container>
+            <StyleProvider style={getTheme(platform)}>
+                <Container style={{marginTop: 24}}>
+                    <RootStack />
+                </Container>
+            </StyleProvider>
         </Root>
     );
   }

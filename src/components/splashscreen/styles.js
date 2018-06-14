@@ -21,9 +21,16 @@ export default {
     height: 100
   },
   text: {
-    color: "#D8D8D8",
+    color: "#ff7e00",
     bottom: 6,
     marginTop: 5,
-    alignSelf: "center"
+    alignSelf: "center",
+    fontSize: 50
+  },
+  logoicon: {
+      alignSelf: "center",
+      margin: 20,
+      fontSize: 80,
+      color:"#eb8a33"
   }
 };

@@ -7,7 +7,9 @@ import {
     Icon,
     Body,
     Right,
-    Title
+    Title,
+    Content,
+    Text
 } from 'native-base';
 
 export default class StaffScreen extends React.Component {
@@ -36,6 +38,9 @@ export default class StaffScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
+            <Content>
+                <Text>Staff screen</Text>
+            </Content>
         </Container>
     )
   }

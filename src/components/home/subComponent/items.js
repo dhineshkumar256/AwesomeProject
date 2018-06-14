@@ -7,7 +7,12 @@ import {
     Button,
     Body,
     Title,
-    Right
+    Right,
+    Content,
+    Card,
+    List,
+    ListItem,
+    Text
 } from 'native-base';
 
 export default class ItemScreen extends React.Component {
@@ -36,6 +41,20 @@ export default class ItemScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
+            <Content>
+                <Card style={{marginLeft:15, marginRight:15}}>
+                    <List style={{padding: 15}}>
+                        <ListItem icon>
+                            <Left><Icon name="list"></Icon></Left>
+                            <Body><Text>Items</Text></Body>
+                        </ListItem>
+                        <ListItem icon>
+                            <Left><Icon name="md-apps"></Icon></Left>
+                            <Body><Text>Categories</Text></Body>
+                        </ListItem>
+                    </List>
+                </Card>
+            </Content>
         </Container>
     )
   }
