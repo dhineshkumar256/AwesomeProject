@@ -125,7 +125,7 @@ export default class Signup extends React.Component {
 
     render () {
         return(
-            <Container style={{backgroundColor: "#FFF"}}>
+            <Container>
                 <Header>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.goBack()}>
@@ -139,8 +139,8 @@ export default class Signup extends React.Component {
                 </Header>
                 <KeyboardAvoidingView style={{flex:1}} behaviour="margin" enabled>
                 <ScrollView>
-                <Content>
-                    <Card style={styles.signupcard}>
+                <Content padder>
+                    <Card>
                         <Icon name="md-bowtie" style={styles.signupcardIcon}></Icon>
                         <Form>
                             <Item error={false} floatingLabel>
@@ -168,7 +168,7 @@ export default class Signup extends React.Component {
                             <Item style={{marginTop: 10}}>
                                 <Picker
                                   mode="dropdown"
-                                  iosHeader="Select your Country"
+                                  Header="Select your Country"
                                   iosIcon={<Icon name="ios-arrow-down-outline" />}
                                   style={{ width: undefined }}
                                   textStyle={{ color: "#5cb85c" }}

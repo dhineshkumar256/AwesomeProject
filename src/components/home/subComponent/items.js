@@ -20,10 +20,18 @@ export default class ItemScreen extends React.Component {
   constructor(props) {
     super(props);
     this.fnopenDrawer = this.fnopenDrawer.bind(this);
+    this.getItems = this.getItems.bind(this);
+    this.getCategories = this.getCategories.bind(this);
   }
 
   fnopenDrawer() {
       this.props.navigation.openDrawer();
+  }
+  getItems() {
+      this.props.navigation.navigate('createItem');
+  }
+  getCategories() {
+      this.props.navigation.navigate('createCategories');
   }
 
   render() {
@@ -41,14 +49,14 @@ export default class ItemScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
-            <Content>
-                <Card style={{marginLeft:15, marginRight:15}}>
+            <Content padder>
+                <Card>
                     <List style={{padding: 15}}>
-                        <ListItem icon>
+                        <ListItem icon onPress={() => this.getItems()}>
                             <Left><Icon name="list"></Icon></Left>
                             <Body><Text>Items</Text></Body>
                         </ListItem>
-                        <ListItem icon>
+                        <ListItem icon onPress={() => this.getCategories()}>
                             <Left><Icon name="md-apps"></Icon></Left>
                             <Body><Text>Categories</Text></Body>
                         </ListItem>

@@ -46,7 +46,7 @@ export default class Login extends React.Component {
   }
 
   happylogin (){
-    if(this.state.username == '' || this.state.password == '') {
+    if(this.state.username != '' || this.state.password != '') {
         ToastService("warning", "Fill all the Field!!");
         this.setState({
             validEcheck: true
@@ -65,7 +65,7 @@ export default class Login extends React.Component {
   }
   render() {
     return (
-        <Container style={{backgroundColor: "#FFF"}}>
+        <Container>
           <Header>
             <Left>
               <Button transparent onPress={() => this.props.navigation.goBack()}>
@@ -78,7 +78,7 @@ export default class Login extends React.Component {
             <Right />
           </Header>
 
-          <Content>
+          <Content padder>
             <Card style={styles.logincard}>
                 <Icon name="md-bowtie" style={styles.logincardIcon}></Icon>
                 <Form>

@@ -5,8 +5,6 @@ const deviceHeight = Dimensions.get("window").height;
 export default {
     logincard: {
         marginTop: deviceHeight / 8,
-        marginLeft:15,
-        marginRight:15
     },
     logincardIcon: {
         alignSelf: "center",
