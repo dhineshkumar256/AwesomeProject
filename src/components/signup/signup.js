@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Grid, Col } from 'react-native-easy-grid';
 import {
     Container,
     Header,
@@ -20,6 +20,7 @@ import {
     Picker
         } from "native-base";
 import styles from "./style";
+import ToastService from "../custom/toastservice";
 
 export default class Signup extends React.Component {
 
@@ -32,10 +33,9 @@ export default class Signup extends React.Component {
             email : '',
             password : '',
             restname : '',
-            lastname : '',
             signupLoading : false,
             showPassword : true,
-            selected: "key1"
+            country: "IND"
         };
     }
 
@@ -57,28 +57,21 @@ export default class Signup extends React.Component {
         }
     }
 
-    FormValidation(key, val) {
-        switch (key) {
-            case "email":
-                let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-                if(reg.test(val) === false) {
-
-                }
-            break;
-            case "password":
-                if(this.state.password != 0) {
-                    this.setState({
-                        password : val,
-                        PassworderrorMsg : true
-                    });
-                }else{
-                    this.setState({
-                        password : val,
-                        PassworderrorMsg : false
-                    });
-                }
-            break;
-            default:
+    FormValidation() {
+        let bool = true;
+        if(this.state.email == '' || this.state.password == '' || this.state.restname == ''){
+            bool = false;
+            ToastService("warning", "Fields Cannot be Empty");
+        }
+        if(this.state.email != ''){
+            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+            if(reg.test(this.state.email) === false) {
+                bool = false;
+                ToastService("warning", "Invalid Email Address !!");
+            }
+        }
+        if(bool == true){
+            this.happysignup();
         }
     }
 
@@ -89,17 +82,19 @@ export default class Signup extends React.Component {
         const { restname }  = this.state;
         const { email }  = this.state;
         const { password }  = this.state;
+        const { country } = this.state;
 
-        fetch('http://192.168.1.10/React/Native/AwesomeProject/src/server/UserRegistration.php', {
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/UserRegistration.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json'
             },
             body : JSON.stringify({
-                name : restname,
+                restname : restname,
                 email : email,
-                password : password
+                password : password,
+                country : country
             })
         })
         .then(function(response){
@@ -110,13 +105,18 @@ export default class Signup extends React.Component {
         })
         .then(function(responseJson){
             if(responseJson.data != null) {
-                this.props.navigation.navigate('Home');
+                ToastService("success", responseJson.data);
             }else{
-                alert(responseJson.error);
+                ToastService("warning", responseJson.error);
             }
             this.setState({
                 signupLoading : false
             });
+        }.bind(this))
+        .then(function(){
+            if(this.state.signupLoading == false){
+                this.props.navigation.navigate('Home');
+            }
         }.bind(this))
         .catch(function(error){
             console.error(error);
@@ -137,8 +137,6 @@ export default class Signup extends React.Component {
                     </Body>
                     <Right />
                 </Header>
-                <KeyboardAvoidingView style={{flex:1}} behaviour="margin" enabled>
-                <ScrollView>
                 <Content padder>
                     <Card>
                         <Icon name="md-bowtie" style={styles.signupcardIcon}></Icon>
@@ -146,14 +144,14 @@ export default class Signup extends React.Component {
                             <Item error={false} floatingLabel>
                                 <Label>Email</Label>
                                 <Input
-                                    onChangeText={(email) => this.FormValidation("email",email)}
+                                    onChangeText={(email) => this.setState({email})}
                                     value={this.state.email}
                                 />
                             </Item>
                             <Item floatingLabel>
                                 <Label>Password</Label>
                                 <Input secureTextEntry = {this.state.showPassword}
-                                    onChangeText={(password) => this.FormValidation("password",password)}
+                                    onChangeText={(password) => this.setState({password})}
                                     value={this.state.password}
                                 />
                                 <Icon onPress={this.showPassword} name="eye" style={this.state.showPassword ? styles.hide : styles.show}/>
@@ -166,27 +164,34 @@ export default class Signup extends React.Component {
                                 />
                             </Item>
                             <Item style={{marginTop: 10}}>
-                                <Picker
-                                  mode="dropdown"
-                                  Header="Select your Country"
-                                  iosIcon={<Icon name="ios-arrow-down-outline" />}
-                                  style={{ width: undefined }}
-                                  textStyle={{ color: "#5cb85c" }}
-                                  itemStyle={{
-                                    backgroundColor: "#d3d3d3",
-                                    marginLeft: 0,
-                                    paddingLeft: 10
-                                  }}
-                                  itemTextStyle={{ color: '#788ad2' }}
-                                  selectedValue={this.state.selected}
-                                  onValueChange={this.onValueChange.bind(this)}
-                                >
-                                      <Picker.Item label="USA" value="key0" />
-                                      <Picker.Item label="UK" value="key1" />
-                                      <Picker.Item label="IND" value="key2" />
-                                      <Picker.Item label="AUS" value="key3" />
-                                      <Picker.Item label="CHINA" value="key4" />
-                                </Picker>
+                                <Grid>
+                                <Col style={{alignSelf: "center"}}>
+                                    <Label>Country</Label>
+                                </Col>
+                                    <Col>
+                                        <Picker
+                                          mode="dropdown"
+                                          Header="Select your Country"
+                                          iosIcon={<Icon name="ios-arrow-down-outline" />}
+                                          style={{ width: undefined }}
+                                          textStyle={{ color: "#5cb85c" }}
+                                          itemStyle={{
+                                            backgroundColor: "#d3d3d3",
+                                            marginLeft: 0,
+                                            paddingLeft: 10
+                                          }}
+                                          itemTextStyle={{ color: '#788ad2' }}
+                                          selectedValue={this.state.country}
+                                          onValueChange={this.onValueChange.bind(this)}
+                                        >
+                                              <Picker.Item label="USA" value="USA" />
+                                              <Picker.Item label="UK" value="UK" />
+                                              <Picker.Item label="IND" value="IND" />
+                                              <Picker.Item label="AUS" value="AUS" />
+                                              <Picker.Item label="CHINA" value="CHINA" />
+                                        </Picker>
+                                    </Col>
+                                </Grid>
                             </Item>
                         </Form>
                         <Button block
@@ -200,8 +205,6 @@ export default class Signup extends React.Component {
                         </Button>
                     </Card>
                 </Content>
-                </ScrollView>
-                </KeyboardAvoidingView>
             </Container>
         )
     }

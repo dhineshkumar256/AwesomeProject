@@ -28,10 +28,10 @@ export default class ItemScreen extends React.Component {
       this.props.navigation.openDrawer();
   }
   getItems() {
-      this.props.navigation.navigate('createItem');
+      this.props.navigation.navigate('Items');
   }
   getCategories() {
-      this.props.navigation.navigate('createCategories');
+      this.props.navigation.navigate('Categories');
   }
 
   render() {
@@ -52,13 +52,13 @@ export default class ItemScreen extends React.Component {
             <Content padder>
                 <Card>
                     <List style={{padding: 15}}>
-                        <ListItem icon onPress={() => this.getItems()}>
-                            <Left><Icon name="list"></Icon></Left>
-                            <Body><Text>Items</Text></Body>
-                        </ListItem>
                         <ListItem icon onPress={() => this.getCategories()}>
                             <Left><Icon name="md-apps"></Icon></Left>
                             <Body><Text>Categories</Text></Body>
+                        </ListItem>
+                        <ListItem icon onPress={() => this.getItems()}>
+                            <Left><Icon name="list"></Icon></Left>
+                            <Body><Text>Items</Text></Body>
                         </ListItem>
                     </List>
                 </Card>

@@ -4,8 +4,10 @@ import Splashscreen from '../components/splashscreen/Splashscreen';
 import Login from '../components/login/login';
 import Signup from '../components/signup/signup';
 import Home from '../components/home/home';
-import createCategories from '../components/home/subComponent/createCategories';
-import createItem from '../components/home/subComponent/createItem';
+import Categories from '../components/home/subComponent/categories/categorey';
+import createCategories from '../components/home/subComponent/categories/createCategories';
+import Items from '../components/home/subComponent/items/items';
+import createItem from '../components/home/subComponent/items/createItem';
 
 const RootStack = createStackNavigator(
   {
@@ -14,7 +16,9 @@ const RootStack = createStackNavigator(
     Signup : Signup,
     Home : Home,
     createCategories : createCategories,
-    createItem : createItem
+    Items : Items,
+    createItem : createItem,
+    Categories : Categories
   },
   {
     initialRouteName : 'Splashscreen',

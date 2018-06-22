@@ -1,6 +1,6 @@
 <?php
   $HostName = "localhost";
-  $DatabaseName = "happywaiter_db";
+  $DatabaseName = "waiterdb";
   $HostUser = "root";
   $HostPass = "";
 ?>

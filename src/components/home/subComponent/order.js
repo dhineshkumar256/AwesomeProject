@@ -36,7 +36,7 @@ export default class OrderScreen extends React.Component {
                 </Body>
                 <Right/>
             </Header>
-            <Content>
+            <Content padder>
                 <Text>Order screen</Text>
             </Content>
         </Container>

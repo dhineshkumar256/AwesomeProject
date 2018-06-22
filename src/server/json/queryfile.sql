@@ -1,0 +1,135 @@
+CREATE TABLE `STAFF_DETAILS` (
+    `STAFF_ID` int(10) NOT NULL,
+    `STAFF_FNAME` varchar(255) NOT NULL,
+    `STAFF_LNAME` varchar(255) NOT NULL,
+    `STAFF_EMAIL` varchar(255) NOT NULL,
+    `STAFF_PASSWORD` varchar(255) NOT NULL,
+    `STAFF_PHONE` int(10) NOT NULL,
+    `STAFF_ROLE_ID` int(10) NOT NULL,
+    `IS_EMAIL_VERIFIED` boolean,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL,
+    `STATUS_ID` int(10) NOT NULL
+);
+CREATE TABLE `RESTAURUNT` (
+    `REST_ID` int(10) NOT NULL,
+    `REST_NAME` varchar(255) NOT NULL,
+    `REST_EMAIL` varchar(255) NOT NULL,
+    `REST_PHONE` int(10) NOT NULL,
+    `REST_COUNTRY` int(10) NOT NULL,
+    `REST_TIMEZONE` boolean,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL,
+    `STATUS_ID` int(10) NOT NULL,
+    `REST_BILL_PLAN_ID` int(10) NOT NULL
+);
+
+CREATE TABLE `STAFF_RESTAURUNT` (
+	`STAFF_REST_ID` int(10) NOT NULL,
+    `STAFF_ID` int(10) NOT NULL,
+    `REST_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+
+CREATE TABLE `ROLE` (
+	`ROLE_ID` int(10) NOT NULL,
+    `ROLE_NAME` varchar(255) NOT NULL,
+	`STATUS_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+
+);
+
+INSERT INTO `ROLE`
+	(`ROLE_ID`, `ROLE_NAME`, `STATUS_ID`, `CREATE_DATE`, `MODIFY_DATE`)
+    VALUES
+    ("1", "OWNER", "1", now(), now()),
+    ("2", "ADMIN", "1", now(), now()),
+    ("3", "WAITER", "1", now(), now()),
+    ("4", "CASHIER", "1", now(), now()),
+    ("5", "KDS", "1", now(), now());
+
+CREATE TABLE `CATEGOERY` (
+	`CAT_ID` int(10) NOT NULL,
+    `REST_ID` int(10) NOT NULL,
+    `CAT_NAME` varchar(255) NOT NULL,
+    `STATUS_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+CREATE TABLE `ITEM` (
+	`ITEM_ID` int(10) NOT NULL,
+    `CAT_ID` int(10) NOT NULL,
+    `ITEM_NAME` varchar(255) NOT NULL,
+    `ITEM_PRICE` int(10) NOT NULL,
+    `STATUS_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+CREATE TABLE `STATUS` (
+	`STATUS_ID` int(10) NOT NULL,
+    `STATUS_NAME` varchar(255) NOT NULL,
+    `STATUS_DESC` varchar(255) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+
+INSERT INTO `STATUS`
+	(`STATUS_ID`, `STATUS_NAME`, `STATUS_DESC`, `CREATE_DATE`, `MODIFY_DATE`)
+	VALUES
+    ("1", "active", "active user", now(), now()),
+    ("2", "Inactive", "user not in active", now(), now()),
+    ("3", "delete", "deleted user", now(), now());
+
+CREATE TABLE `ORDERS` (
+	`ORDER_ID` int(10) NOT NULL,
+    `REST_ID` int(10) NOT NULL,
+    `USER_ID` int(10) NOT NULL,
+    `TABLE_ID` int(10) NOT NULL,
+    `IS_CHECKOUT` boolean,
+    `STATUS_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+CREATE TABLE `ORDER_DETAILS` (
+	`ORDER_DETAIL_ID` int(10) NOT NULL,
+    `ORDER_ID` int(10) NOT NULL,
+    `ITEM_ID` int(10) NOT NULL,
+    `ITEM_EXTRAS` varchar(255) NOT NULL,
+    `CUSTOM_DETAILS` varchar(255) NOT NULL,
+    `STATUS_ID` int(10) NOT NULL,
+    `CREATE_DATE` date NOT NULL,
+    `MODIFY_DATE` date NOT NULL
+);
+
+ALTER TABLE `staff_details` ADD FOREIGN KEY (`STAFF_ROLE_ID`) REFERENCES role(`ROLE_ID`);
+ALTER TABLE `staff_details` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+
+ALTER TABLE `categoery` ADD PRIMARY KEY (`CAT_ID`);
+ALTER TABLE `categoery` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+
+ALTER TABLE `restaurunt` ADD PRIMARY KEY (`REST_ID`);
+
+ALTER TABLE `categoery` ADD FOREIGN KEY (`REST_ID`) REFERENCES restaurunt(`REST_ID`);
+
+ALTER TABLE `item` ADD PRIMARY KEY (`ITEM_ID`);
+ALTER TABLE `item` ADD FOREIGN KEY (`CAT_ID`) REFERENCES categoery(`CAT_ID`);
+ALTER TABLE `item` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+
+ALTER TABLE `orders` ADD PRIMARY KEY (`ORDER_ID`);
+ALTER TABLE `orders` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+ALTER TABLE `orders` ADD FOREIGN KEY (`REST_ID`) REFERENCES restaurunt(`REST_ID`);
+
+ALTER TABLE `order_details` ADD PRIMARY KEY (`ORDER_DETAIL_ID`);
+ALTER TABLE `order_details` ADD FOREIGN KEY (`ORDER_ID`) REFERENCES orders(`ORDER_ID`);
+ALTER TABLE `order_details` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+ALTER TABLE `order_details` ADD FOREIGN KEY (`ITEM_ID`) REFERENCES item(`ITEM_ID`);
+
+ALTER TABLE `role` ADD FOREIGN KEY (`STATUS_ID`) REFERENCES status(`STATUS_ID`);
+
+ALTER TABLE `staff_restaurunt` ADD PRIMARY KEY (`STAFF_REST_ID`);
+ALTER TABLE `staff_restaurunt` ADD FOREIGN KEY (`STAFF_ID`) REFERENCES staff_details(`STAFF_ID`);
+ALTER TABLE `staff_restaurunt` Add FOREIGN KEY (`REST_ID`) REFERENCES restaurunt(`REST_ID`);
+
+ALTER TABLE `status` ADD PRIMARY KEY (`STATUS_ID`);
