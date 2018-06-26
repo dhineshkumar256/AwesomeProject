@@ -17,12 +17,41 @@ import {
     View
 } from 'native-base';
 
-const dataArray = [];
-
 export default class Categories extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+            emptyText : true,
+            dataArray : []
+        };
         this.createCategories = this.createCategories.bind(this);
+    }
+    componentWillMount(){
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
+            method : 'POST',
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+                REST_ID : global.REST_ID,
+            })
+        })
+        .then(function(response){
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(function(responseJson){
+            if(responseJson.length > 0){
+                this.setState({dataArray : responseJson});
+                this.setState({emptyText : false});
+            }
+        }.bind(this))
+        .catch(function(error){
+            console.error(error);
+        });
     }
     createCategories(data){
         if(data){
@@ -38,7 +67,8 @@ export default class Categories extends React.Component{
         const catData = navigation.getParam("catData");
 
         if(catData) {
-            dataArray = catData;
+            console.log(catData);
+            this.state.dataArray.push(catData);
         }
 
         return(
@@ -55,17 +85,17 @@ export default class Categories extends React.Component{
                     </Body>
                     <Right />
                 </Header>
-                {   dataArray.length <= 0 &&
+                {   this.state.emptyText &&
                     <Content padder>
                         <Text>List of Categories is empty.</Text>
                         <Text>Click on the (+) button to create an item</Text>
                     </Content>
                 }
-                {   dataArray.length > 0 &&
+                {   !this.state.emptyText &&
                     <Content padder>
                         <Card>
                             <List style={{padding: 15, paddingLeft: 5}}
-                                dataArray={dataArray}
+                                dataArray={this.state.dataArray}
                                 renderRow={data =>
                                 <ListItem avatar style={{padding: 5}} onPress={() => this.createCategories(data)}>
                                     <Left>
@@ -79,11 +109,11 @@ export default class Categories extends React.Component{
                                             backgroundColor:'#fff',
                                             borderRadius:100,
                                         }}>
-                                            <Text style={{fontSize: 30}}>{data.categoreyName.charAt(0).toUpperCase()}</Text>
+                                            <Text style={{fontSize: 30}}>{data.CAT_NAME.charAt(0).toUpperCase()}</Text>
                                         </View>
                                     </Left>
                                     <Body>
-                                        <Text>{data.categoreyName}</Text>
+                                        <Text>{data.CAT_NAME}</Text>
                                     </Body>
                                 </ListItem>}
                             />

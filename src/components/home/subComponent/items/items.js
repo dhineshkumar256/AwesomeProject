@@ -35,6 +35,34 @@ export default class Items extends React.Component{
         }
     }
 
+    componentWillMount(){
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getItems.php',{
+            method : 'POST',
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+                REST_ID : global.REST_ID,
+            })
+        })
+        .then(function(response){
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(function(responseJson){
+            if(responseJson.length > 0){
+                dataArray = responseJson;
+                this.setState({islistEmpty: false});
+            }
+        }.bind(this))
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+
     createList(data) {
         if(data){
             this.props.navigation.navigate('createItem',{
@@ -49,7 +77,7 @@ export default class Items extends React.Component{
         const { navigation } = this.props;
         const listData = navigation.getParam("listData");
         if(listData) {
-            dataArray = listData;
+            dataArray.push(listData);
         }
         return(
             <Container>
@@ -65,13 +93,13 @@ export default class Items extends React.Component{
                     </Body>
                     <Right/>
                 </Header>
-                {   dataArray.length <= 0 &&
+                {   this.state.islistEmpty &&
                     <Content padder>
                         <Text>List of Items is empty.</Text>
                         <Text>Click on the (+) button to create an item</Text>
                     </Content>
                 }
-                {   dataArray.length > 0 &&
+                {   !this.state.islistEmpty &&
                     <Content padder>
                         <Card>
                             <List style={{padding: 15, paddingLeft: 5}}
@@ -89,15 +117,15 @@ export default class Items extends React.Component{
                                             backgroundColor:'#fff',
                                             borderRadius:100,
                                         }}>
-                                            <Text style={{fontSize: 30}}>{data.name.charAt(0).toUpperCase()}</Text>
+                                            <Text style={{fontSize: 30}}>{data.ITEM_NAME.charAt(0).toUpperCase()}</Text>
                                         </View>
                                     </Left>
                                     <Body>
-                                        <Text>{data.name}</Text>
-                                        <Text numberOfLines={1} note>{data.category}</Text>
+                                        <Text>{data.ITEM_NAME}</Text>
+                                        <Text numberOfLines={1} note>{data.CAT_ID}</Text>
                                     </Body>
                                     <Right>
-                                        <Text>{data.price}</Text>
+                                        <Text>{data.ITEM_PRICE}</Text>
                                     </Right>
                                 </ListItem>}
                             />

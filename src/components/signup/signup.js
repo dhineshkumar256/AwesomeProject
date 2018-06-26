@@ -119,6 +119,9 @@ export default class Signup extends React.Component {
             }
         }.bind(this))
         .catch(function(error){
+            this.setState({
+                signupLoading : false
+            });
             console.error(error);
         });
     }   //Signup function ends

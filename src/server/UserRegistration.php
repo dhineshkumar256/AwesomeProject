@@ -26,13 +26,14 @@
                                             REST_TIMEZONE, CREATE_DATE, MODIFY_DATE, STATUS_ID, REST_BILL_PLAN_ID)
                     values ('$restID', '$restname', '$email', '$password', '1234', '$country', '123', now(), now(), '1', '123')";
 
-    if(mysqli_query($con,$Sql_Query)){
-      $MSG = 'User Registered Successfully';
-      $returnArray['data'] = $MSG;
-      echo json_encode($returnArray);
+    if($result = mysqli_query($con,$Sql_Query)){
+        $MSG = 'User Registered Successfully';
+        $returnArray['data'] = $MSG;
+        $returnArray['REST_ID'] = $restID;
+        echo json_encode($returnArray);
     }else{
-      $returnArray['error'] = 'Oops.. Something Went Wrong!!';
-      echo json_encode($returnArray);
+        $returnArray['error'] = 'Oops.. Something Went Wrong!!';
+        echo json_encode($returnArray);
     }
   }
   mysqli_close($con);

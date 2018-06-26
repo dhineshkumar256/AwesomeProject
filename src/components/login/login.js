@@ -23,16 +23,17 @@ import ToastService from "../custom/toastservice";
 export default class Login extends React.Component {
     constructor(props){
         super(props);
+        global.REST_ID = '';
         this.happylogin = this.happylogin.bind(this);
         this.showPasswordL = this.showPasswordL.bind(this);
         this.FormValidation = this.FormValidation.bind(this);
         this.state = {
-        username : '',
-        password : '',
-        showToast: false,
-        validEcheck: false,
-        showPasswordL: true,
-        loginLoading : false
+            username : '',
+            password : '',
+            showToast: false,
+            validEcheck: false,
+            showPasswordL: true,
+            loginLoading : false
         };
     }
 
@@ -67,7 +68,6 @@ export default class Login extends React.Component {
         const { username }  = this.state;
         const { password }  = this.state;
 
-
         fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/UserLogin.php', {
             method : 'POST',
             headers : {
@@ -93,6 +93,7 @@ export default class Login extends React.Component {
                     username: '',
                     password: '',
                 });
+                global.REST_ID = responseJson.REST_ID;
                 this.props.navigation.navigate('Home', {
                     username : username
                 });
@@ -104,6 +105,9 @@ export default class Login extends React.Component {
             }
         }.bind(this))
         .catch(function(error){
+            this.setState({
+                loginLoading : false,
+            });
             console.error(error);
         });
     }

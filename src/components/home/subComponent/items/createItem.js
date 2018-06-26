@@ -22,15 +22,18 @@ import {
 import ToastService from "../../../custom/toastservice";
 
 const listArray = [];
+const catDropDownArray = [];
 
 export default class createItem extends React.Component{
     constructor(props){
         super(props);
         this.saveItems = this.saveItems.bind(this);
+        this.loadDropDown = this.loadDropDown.bind(this);
         this.state = {
-            itemName : '',
-            itemCategory : "0",
-            itemPrice : '',
+            ITEM_NAME : '',
+            CAT_ID : "",
+            ITEM_PRICE : '',
+            dropdownData : []
         }
     }
 
@@ -39,29 +42,86 @@ export default class createItem extends React.Component{
         const listData = navigation.getParam('editItemData');
         if(listData){
             this.setState({
-                itemName : listData.name,
-                itemCategory : listData.category,
-                itemPrice : listData.price
+                ITEM_NAME : listData.name,
+                CAT_ID : listData.category,
+                ITEM_PRICE : listData.price
             });
         }
     }
 
+    componentWillMount(){
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
+            method : 'POST',
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+                REST_ID : global.REST_ID,
+            })
+        })
+        .then(function(response){
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(function(responseJson){
+            if(responseJson.length > 0){
+                this.setState({
+                    dropdownData : responseJson
+                });
+            }
+        }.bind(this))
+        .catch(function(error){
+            console.error(error);
+        });
+    }
+
+    loadDropDown() {
+        return this.state.dropdownData.map(data => (
+            <Picker.Item key={data.CAT_ID} label={data.CAT_NAME} value={data.CAT_ID} />
+        ))
+    }
+
     onCatValueChange(value: string) {
         this.setState({
-          itemCategory: value
+          CAT_ID: value
         });
     }
     saveItems() {
         if(this.state.itemName != '') {
-            listArray.push(
-                {
-                    name : this.state.itemName,
-                    category : this.state.itemCategory,
-                    price : this.state.itemPrice
+            fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/createItems.php',{
+                method : "POST",
+                header : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({
+                    CAT_ID : this.state.CAT_ID,
+                    ITEM_NAME : this.state.ITEM_NAME,
+                    ITEM_PRICE : this.state.ITEM_PRICE
+                })
+            }).
+            then(function(response){
+                if (!response.ok) {
+                    throw Error(response.statusText);
                 }
-            );
-            this.props.navigation.navigate('Items',{
-                listData : listArray
+                return response.json();
+            })
+            .then(function(responseJson){
+                if(responseJson){
+                    this.props.navigation.navigate('Items',{
+                        listData : {
+                                ITEM_NAME : this.state.ITEM_NAME,
+                                CAT_ID : this.state.CAT_ID,
+                                ITEM_PRICE : this.state.ITEM_PRICE
+                            }
+                    });
+                }
+            }.bind(this))
+            .catch(function(error){
+                console.error(error);
             });
         }else{
             ToastService("warning", "Item Name can not be empty");
@@ -100,8 +160,8 @@ export default class createItem extends React.Component{
                                 <Col>
                                     <Item>
                                         <Input
-                                            onChangeText={(itemName) => this.setState({itemName})}
-                                            value={this.state.itemName}
+                                            onChangeText={(ITEM_NAME) => this.setState({ITEM_NAME})}
+                                            value={this.state.ITEM_NAME}
                                         />
                                     </Item>
                                 </Col>
@@ -126,11 +186,10 @@ export default class createItem extends React.Component{
                                             paddingLeft: 10
                                           }}
                                           itemTextStyle={{ color: '#788ad2' }}
-                                          selectedValue={this.state.itemCategory}
+                                          selectedValue={this.state.CAT_ID}
                                           onValueChange={this.onCatValueChange.bind(this)}
                                         >
-                                            <Picker.Item label="Select Category" value="0" />
-                                            <Picker.Item label="No Category available" value="1" />
+                                            {this.loadDropDown()}
                                         </Picker>
                                     </Item>
                                 </Col>
@@ -144,8 +203,8 @@ export default class createItem extends React.Component{
                                 <Col>
                                     <Item>
                                         <Input
-                                            onChangeText={(itemPrice) => this.setState({itemPrice})}
-                                            value={this.state.itemPrice}
+                                            onChangeText={(ITEM_PRICE) => this.setState({ITEM_PRICE})}
+                                            value={this.state.ITEM_PRICE}
                                         />
                                     </Item>
                                 </Col>

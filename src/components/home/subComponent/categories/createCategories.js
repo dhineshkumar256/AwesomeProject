@@ -25,7 +25,9 @@ export default class createCategories extends React.Component{
         super(props);
         this.saveCategorey = this.saveCategorey.bind(this);
         this.state = {
-            categoreyName : ''
+            CAT_NAME : '',
+            CAT_ID : '',
+            editFlag : false
         }
     }
 
@@ -34,21 +36,81 @@ export default class createCategories extends React.Component{
         const editCatData = navigation.getParam('editCatData');
         if(editCatData){
             this.setState({
-                categoreyName : editCatData.categoreyName,
+                CAT_NAME : editCatData.CAT_NAME,
+                CAT_ID : editCatData.CAT_ID,
+                editFlag : true
             });
         }
     }
 
     saveCategorey() {
-        if(this.state.categoreyName != '') {
-            catdataArray.push(
-                {categoreyName : this.state.categoreyName}
-            );
-            this.props.navigation.navigate('Categories', {
-                catData : catdataArray
-            })
+        if(!this.state.editFlag){
+            if(this.state.CAT_NAME != '') {
+                fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/createCategories.php',{
+                    method : "POST",
+                    header : {
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({
+                        REST_ID : global.REST_ID,
+                        CAT_NAME : this.state.CAT_NAME
+                    })
+                })
+                .then(function(response){
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function(responseJson){
+                    if(responseJson){
+                        this.props.navigation.navigate('Categories', {
+                            catData : {CAT_NAME : this.state.CAT_NAME}
+                        });
+                    }
+                }.bind(this))
+                .catch(function(error){
+                    console.error(error);
+                })
+            }else{
+                ToastService("Category Name Cannot be empty");
+            }
         }else{
-            ToastService("Category Name Cannot be empty");
+            if(this.state.CAT_NAME != '') {
+                fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/editCategories.php',{
+                    method : "POST",
+                    header : {
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({
+                        CAT_ID : this.state.CAT_ID,
+                        CAT_NAME : this.state.CAT_NAME
+                    })
+                })
+                .then(function(response){
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function(responseJson){
+                    if(responseJson){
+                        this.props.navigation.navigate('Categories',{
+                            catData : {
+                                CAT_NAME : this.state.CAT_NAME,
+                                CAT_ID : this.state.CAT_ID
+                            }
+                        });
+                    }
+                }.bind(this))
+                .catch(function(error){
+                    console.error(error);
+                })
+            }else{
+                ToastService("Category Name Cannot be empty");
+            }
         }
     }
 
@@ -84,8 +146,8 @@ export default class createCategories extends React.Component{
                                 <Col>
                                     <Item>
                                         <Input
-                                            onChangeText={(categoreyName) => this.setState({categoreyName})}
-                                            value={this.state.categoreyName}
+                                            onChangeText={(CAT_NAME) => this.setState({CAT_NAME})}
+                                            value={this.state.CAT_NAME}
                                         />
                                     </Item>
                                 </Col>
