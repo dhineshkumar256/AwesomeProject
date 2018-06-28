@@ -15,12 +15,12 @@ import {
     Icon,
     Form,
     Text,
-    Spinner,
     Card,
     Picker
         } from "native-base";
 import styles from "./style";
 import ToastService from "../custom/toastservice";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Signup extends React.Component {
 
@@ -34,6 +34,7 @@ export default class Signup extends React.Component {
             password : '',
             restname : '',
             signupLoading : false,
+            gohomeflag : false,
             showPassword : true,
             country: "IND"
         };
@@ -41,7 +42,7 @@ export default class Signup extends React.Component {
 
     onValueChange(value: string) {
         this.setState({
-          selected: value
+          country: value
         });
     }
 
@@ -84,7 +85,7 @@ export default class Signup extends React.Component {
         const { password }  = this.state;
         const { country } = this.state;
 
-        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/UserRegistration.php', {
+        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/UserRegistration.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -106,16 +107,22 @@ export default class Signup extends React.Component {
         .then(function(responseJson){
             if(responseJson.data != null) {
                 ToastService("success", responseJson.data);
+                this.setState({
+                    gohomeflag : true,
+                    signupLoading : false
+                });
             }else{
+                this.setState({
+                    signupLoading : false
+                });
                 ToastService("warning", responseJson.error);
             }
-            this.setState({
-                signupLoading : false
-            });
         }.bind(this))
         .then(function(){
-            if(this.state.signupLoading == false){
-                this.props.navigation.navigate('Home');
+            if(this.state.gohomeflag == true){
+                this.props.navigation.navigate('Home', {
+                    username : email
+                });
             }
         }.bind(this))
         .catch(function(error){
@@ -201,13 +208,11 @@ export default class Signup extends React.Component {
                             style={{ margin: 15, marginTop: 50 }}
                             onPress={this.FormValidation}
                         >
-                            {this.state.signupLoading ?
-                                <Spinner color='white' /> :
-                                <Text>Sign Up</Text>
-                            }
+                            <Text>Sign Up</Text>
                         </Button>
                     </Card>
                 </Content>
+                <Spinner visible={this.state.signupLoading} textContent={"Loading..."} animation={"fade"} textStyle={{color: '#FFF'}} />
             </Container>
         )
     }

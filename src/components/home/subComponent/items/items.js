@@ -23,6 +23,7 @@ import {
     Thumbnail,
     View
 } from 'native-base';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const dataArray = [];
 
@@ -31,12 +32,13 @@ export default class Items extends React.Component{
         super(props);
         this.createList = this.createList.bind(this);
         this.state = {
-            islistEmpty : true
+            islistEmpty : true,
+            itemloader : true
         }
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getItems.php',{
+        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getItems.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -55,7 +57,10 @@ export default class Items extends React.Component{
         .then(function(responseJson){
             if(responseJson.length > 0){
                 dataArray = responseJson;
-                this.setState({islistEmpty: false});
+                this.setState({
+                    islistEmpty: false,
+                    itemloader : false
+                });
             }
         }.bind(this))
         .catch(function(error){
@@ -139,7 +144,7 @@ export default class Items extends React.Component{
                 >
                     <Icon name="md-add" />
                 </Fab>
-
+                <Spinner visible={this.state.itemloader} textContent={"Loading..."} animation={"fade"} textStyle={{color: '#FFF'}} />
             </Container>
         )
     }

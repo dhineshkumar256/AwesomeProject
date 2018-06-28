@@ -14,11 +14,11 @@ import {
     Icon,
     Form,
     Text,
-    Card,
-    Spinner
+    Card
 } from "native-base";
 import styles from "./style";
 import ToastService from "../custom/toastservice";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Login extends React.Component {
     constructor(props){
@@ -68,7 +68,7 @@ export default class Login extends React.Component {
         const { username }  = this.state;
         const { password }  = this.state;
 
-        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/UserLogin.php', {
+        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/UserLogin.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -109,7 +109,7 @@ export default class Login extends React.Component {
                 loginLoading : false,
             });
             console.error(error);
-        });
+        }.bind(this));
     }
     render() {
         return (
@@ -150,13 +150,11 @@ export default class Login extends React.Component {
                         <Button block
                             style={{ margin: 15, marginTop: 50 }}
                             onPress={this.FormValidation}>
-                            {this.state.loginLoading ?
-                                <Spinner color='white' /> :
-                                <Text>Log In</Text>
-                            }
+                            <Text>Log In</Text>
                         </Button>
                     </Card>
                 </Content>
+                <Spinner visible={this.state.loginLoading} textContent={"Loading..."} animation={"fade"} textStyle={{color: '#FFF'}} />
             </Container>
         )
     }

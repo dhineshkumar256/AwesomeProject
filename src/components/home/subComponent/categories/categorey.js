@@ -16,18 +16,37 @@ import {
     Card,
     View
 } from 'native-base';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Categories extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             emptyText : true,
-            dataArray : []
+            dataArray : [],
+            catloader : true
         };
         this.createCategories = this.createCategories.bind(this);
     }
+
+    componentWillReceiveProps(nextProps){
+        this.updateCat(nextProps);
+    }
+
+    updateCat(nextProps){
+        if(nextProps.navigation.state.params != undefined){
+            let tempArray = this.state.dataArray;
+            tempArray.map(val => {
+                if(val.CAT_ID == nextProps.navigation.state.params.catData.CAT_ID){
+                    val.CAT_NAME = nextProps.navigation.state.params.catData.CAT_NAME;
+                }
+            });
+            this.setState({ dataArray : tempArray });
+        }
+    }
+
     componentWillMount(){
-        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -45,11 +64,17 @@ export default class Categories extends React.Component{
         })
         .then(function(responseJson){
             if(responseJson.length > 0){
-                this.setState({dataArray : responseJson});
-                this.setState({emptyText : false});
+                this.setState({
+                    dataArray : responseJson,
+                    emptyText : false,
+                    catloader : false
+                });
             }
         }.bind(this))
         .catch(function(error){
+            this.setState({
+                catloader : false
+            });
             console.error(error);
         });
     }
@@ -67,18 +92,16 @@ export default class Categories extends React.Component{
         const catData = navigation.getParam("catData");
 
         if(catData) {
-            console.log(catData);
-            this.state.dataArray.push(catData);
+            //this.state.dataArray.push(catData);
         }
-
         return(
             <Container>
                 <Header>
                     <Left>
-                    <Button transparent
-                        onPress={() => this.props.navigation.goBack()}>
-                        <Icon name='arrow-back' />
-                    </Button>
+                        <Button transparent
+                            onPress={() => this.props.navigation.goBack()}>
+                            <Icon name='arrow-back' />
+                        </Button>
                     </Left>
                     <Body>
                         <Title>Categories</Title>
@@ -127,6 +150,7 @@ export default class Categories extends React.Component{
                 >
                     <Icon name="md-add" />
                 </Fab>
+                <Spinner visible={this.state.catloader} textContent={"Loading..."} animation={"fade"} textStyle={{color: '#FFF'}} />
             </Container>
         )
     }

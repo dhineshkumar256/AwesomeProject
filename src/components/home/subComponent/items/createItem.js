@@ -50,7 +50,7 @@ export default class createItem extends React.Component{
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -90,8 +90,8 @@ export default class createItem extends React.Component{
         });
     }
     saveItems() {
-        if(this.state.itemName != '') {
-            fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/createItems.php',{
+        if(this.state.ITEM_NAME != '') {
+            fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/createItems.php',{
                 method : "POST",
                 header : {
                     'Accept' : 'application/json',
