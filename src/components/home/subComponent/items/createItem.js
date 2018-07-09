@@ -40,17 +40,18 @@ export default class createItem extends React.Component{
     componentDidMount() {
         const { navigation } = this.props;
         const listData = navigation.getParam('editItemData');
+        console.log(listData);
         if(listData){
             this.setState({
-                ITEM_NAME : listData.name,
-                CAT_ID : listData.category,
-                ITEM_PRICE : listData.price
+                ITEM_NAME : listData.ITEM_NAME,
+                CAT_ID : listData.CAT_ID,
+                ITEM_PRICE : listData.ITEM_PRICE
             });
         }
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -90,8 +91,9 @@ export default class createItem extends React.Component{
         });
     }
     saveItems() {
-        if(this.state.ITEM_NAME != '') {
-            fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/createItems.php',{
+        console.log(this.state.CAT_ID);
+        if(this.state.ITEM_NAME != '' && this.state.CAT_ID != 'Select Category') {
+            fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/createItems.php',{
                 method : "POST",
                 header : {
                     'Accept' : 'application/json',
@@ -102,8 +104,8 @@ export default class createItem extends React.Component{
                     ITEM_NAME : this.state.ITEM_NAME,
                     ITEM_PRICE : this.state.ITEM_PRICE
                 })
-            }).
-            then(function(response){
+            })
+            .then(function(response){
                 if (!response.ok) {
                     throw Error(response.statusText);
                 }
@@ -124,7 +126,7 @@ export default class createItem extends React.Component{
                 console.error(error);
             });
         }else{
-            ToastService("warning", "Item Name can not be empty");
+            ToastService("warning", "Fields can not be empty");
         }
     }
 
@@ -189,6 +191,7 @@ export default class createItem extends React.Component{
                                           selectedValue={this.state.CAT_ID}
                                           onValueChange={this.onCatValueChange.bind(this)}
                                         >
+                                            <Picker.Item label="Select Category" value="Select Category" />
                                             {this.loadDropDown()}
                                         </Picker>
                                     </Item>

@@ -35,18 +35,22 @@ export default class Categories extends React.Component{
 
     updateCat(nextProps){
         if(nextProps.navigation.state.params != undefined){
-            let tempArray = this.state.dataArray;
-            tempArray.map(val => {
-                if(val.CAT_ID == nextProps.navigation.state.params.catData.CAT_ID){
-                    val.CAT_NAME = nextProps.navigation.state.params.catData.CAT_NAME;
-                }
-            });
-            this.setState({ dataArray : tempArray });
+            var index = this.state.dataArray.findIndex(val => val.CAT_ID == nextProps.navigation.state.params.catData.CAT_ID);
+            if (index === -1) {
+            }else{
+                this.setState({
+                    dataArray : [
+                        ...this.state.dataArray.slice(0,index),
+                        Object.assign({}, this.state.dataArray[index], nextProps.navigation.state.params.catData),
+                        ...this.state.dataArray.slice(index+1)
+                    ]
+                })
+            }
         }
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -69,6 +73,11 @@ export default class Categories extends React.Component{
                     emptyText : false,
                     catloader : false
                 });
+            }else{
+                this.setState({
+                    emptyText : true,
+                    catloader : false
+                })
             }
         }.bind(this))
         .catch(function(error){

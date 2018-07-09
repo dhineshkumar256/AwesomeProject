@@ -50,12 +50,22 @@ export default class Login extends React.Component {
     }
 
     FormValidation() {
+        let bool = true;
         if(this.state.username == '' || this.state.password == ''){
             ToastService("warning", "Fields Cannot be Empty");
+            bool = false;
             this.setState({
                 validEcheck: true
             });
-        }else{
+        }
+        if(this.state.username != ''){
+            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+            if(reg.test(this.state.username) === false) {
+                bool = false;
+                ToastService("warning", "Invalid Email Address !!");
+            }
+        }
+        if(bool){
             this.happylogin();
         }
     }
@@ -68,7 +78,7 @@ export default class Login extends React.Component {
         const { username }  = this.state;
         const { password }  = this.state;
 
-        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/UserLogin.php', {
+        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/UserLogin.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',

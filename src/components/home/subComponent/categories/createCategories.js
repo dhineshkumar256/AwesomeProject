@@ -46,7 +46,7 @@ export default class createCategories extends React.Component{
     saveCategorey() {
         if(!this.state.editFlag){
             if(this.state.CAT_NAME != '') {
-                fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/createCategories.php',{
+                fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/createCategories.php',{
                     method : "POST",
                     header : {
                         'Accept' : 'application/json',
@@ -78,7 +78,7 @@ export default class createCategories extends React.Component{
             }
         }else{
             if(this.state.CAT_NAME != '') {
-                fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/editCategories.php',{
+                fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/editCategories.php',{
                     method : "POST",
                     header : {
                         'Accept' : 'application/json',

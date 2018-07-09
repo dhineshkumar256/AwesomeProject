@@ -38,7 +38,7 @@ export default class Items extends React.Component{
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/getItems.php',{
+        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getItems.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -61,6 +61,11 @@ export default class Items extends React.Component{
                     islistEmpty: false,
                     itemloader : false
                 });
+            }else{
+                this.setState({
+                    islistEmpty : true,
+                    itemloader : false
+                })
             }
         }.bind(this))
         .catch(function(error){
@@ -127,7 +132,7 @@ export default class Items extends React.Component{
                                     </Left>
                                     <Body>
                                         <Text>{data.ITEM_NAME}</Text>
-                                        <Text numberOfLines={1} note>{data.CAT_ID}</Text>
+                                        <Text numberOfLines={1} note>{data.CAT_NAME}</Text>
                                     </Body>
                                     <Right>
                                         <Text>{data.ITEM_PRICE}</Text>

@@ -10,6 +10,8 @@
 
     $fetchItem = "SELECT * FROM item";
 
+    $fetchItem = "SELECT * FROM categoery c JOIN item i WHERE c.REST_ID ='$REST_ID' AND c.CAT_ID = i.CAT_ID";
+
     $check = mysqli_query($con,$fetchItem);
     $returnArray = array();
 

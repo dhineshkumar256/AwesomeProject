@@ -85,7 +85,7 @@ export default class Signup extends React.Component {
         const { password }  = this.state;
         const { country } = this.state;
 
-        fetch('http://192.168.1.2/React/Native/AwesomeProject/src/server/UserRegistration.php', {
+        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/UserRegistration.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
