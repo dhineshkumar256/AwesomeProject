@@ -25,20 +25,41 @@ import {
 } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const dataArray = [];
-
 export default class Items extends React.Component{
     constructor(props) {
         super(props);
         this.createList = this.createList.bind(this);
+        this.updateItem = this.updateItem.bind(this);
         this.state = {
             islistEmpty : true,
-            itemloader : true
+            itemloader : true,
+            dataArray : []
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.updateItem(nextProps);
+    }
+
+    updateItem(nextProps){
+        console.log(nextProps);
+        if(nextProps.navigation.state.params != undefined){
+            var index = this.state.dataArray.findIndex(val => val.ITEM_ID == nextProps.navigation.state.params.listData.ITEM_ID);
+            if (index === -1) {
+            }else{
+                this.setState({
+                    dataArray : [
+                        ...this.state.dataArray.slice(0,index),
+                        Object.assign({}, this.state.dataArray[index], nextProps.navigation.state.params.listData),
+                        ...this.state.dataArray.slice(index+1)
+                    ]
+                })
+            }
         }
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getItems.php',{
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getItems.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -56,8 +77,8 @@ export default class Items extends React.Component{
         })
         .then(function(responseJson){
             if(responseJson.length > 0){
-                dataArray = responseJson;
                 this.setState({
+                    dataArray : responseJson,
                     islistEmpty: false,
                     itemloader : false
                 });
@@ -87,7 +108,7 @@ export default class Items extends React.Component{
         const { navigation } = this.props;
         const listData = navigation.getParam("listData");
         if(listData) {
-            dataArray.push(listData);
+            this.state.dataArray.push(listData);
         }
         return(
             <Container>
@@ -113,7 +134,7 @@ export default class Items extends React.Component{
                     <Content padder>
                         <Card>
                             <List style={{padding: 15, paddingLeft: 5}}
-                                dataArray={dataArray}
+                                dataArray={this.state.dataArray}
                                 renderRow={data =>
                                 <ListItem avatar style={{padding: 5}} onPress={() => this.createList(data)}>
                                     <Left>

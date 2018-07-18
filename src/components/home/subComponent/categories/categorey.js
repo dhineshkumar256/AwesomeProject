@@ -50,7 +50,7 @@ export default class Categories extends React.Component{
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -85,7 +85,7 @@ export default class Categories extends React.Component{
                 catloader : false
             });
             console.error(error);
-        });
+        }.bind(this));
     }
     createCategories(data){
         if(data){
@@ -101,7 +101,7 @@ export default class Categories extends React.Component{
         const catData = navigation.getParam("catData");
 
         if(catData) {
-            //this.state.dataArray.push(catData);
+            this.state.dataArray.push(catData);
         }
         return(
             <Container>

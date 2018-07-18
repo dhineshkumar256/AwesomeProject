@@ -8,6 +8,7 @@ import Categories from '../components/home/subComponent/categories/categorey';
 import createCategories from '../components/home/subComponent/categories/createCategories';
 import Items from '../components/home/subComponent/items/items';
 import createItem from '../components/home/subComponent/items/createItem';
+import AddStaffScreen from '../components/home/subComponent/addstaff';
 
 const RootStack = createStackNavigator(
   {
@@ -18,7 +19,8 @@ const RootStack = createStackNavigator(
     createCategories : createCategories,
     Items : Items,
     createItem : createItem,
-    Categories : Categories
+    Categories : Categories,
+    AddStaffScreen : AddStaffScreen
   },
   {
     initialRouteName : 'Splashscreen',

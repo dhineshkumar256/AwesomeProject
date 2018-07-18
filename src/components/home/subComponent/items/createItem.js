@@ -30,9 +30,12 @@ export default class createItem extends React.Component{
         this.saveItems = this.saveItems.bind(this);
         this.loadDropDown = this.loadDropDown.bind(this);
         this.state = {
-            ITEM_NAME : '',
+            ITEM_NAME : "",
             CAT_ID : "",
-            ITEM_PRICE : '',
+            CAT_NAME : "",
+            ITEM_PRICE : "",
+            ITEM_ID : "",
+            editFlag : false,
             dropdownData : []
         }
     }
@@ -40,18 +43,20 @@ export default class createItem extends React.Component{
     componentDidMount() {
         const { navigation } = this.props;
         const listData = navigation.getParam('editItemData');
-        console.log(listData);
+
         if(listData){
             this.setState({
                 ITEM_NAME : listData.ITEM_NAME,
                 CAT_ID : listData.CAT_ID,
-                ITEM_PRICE : listData.ITEM_PRICE
+                ITEM_PRICE : listData.ITEM_PRICE,
+                ITEM_ID : listData.ITEM_ID,
+                editFlag : true
             });
         }
     }
 
     componentWillMount(){
-        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/getCategories.php',{
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/getCategories.php',{
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -81,55 +86,96 @@ export default class createItem extends React.Component{
 
     loadDropDown() {
         return this.state.dropdownData.map(data => (
-            <Picker.Item key={data.CAT_ID} label={data.CAT_NAME} value={data.CAT_ID} />
+            <Picker.Item key={data} label={data.CAT_NAME} value={data.CAT_ID} />
         ))
     }
 
-    onCatValueChange(value: string) {
+    onCatValueChange(value : string) {
         this.setState({
-          CAT_ID: value
+          CAT_ID: value,
         });
     }
     saveItems() {
-        console.log(this.state.CAT_ID);
-        if(this.state.ITEM_NAME != '' && this.state.CAT_ID != 'Select Category') {
-            fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/createItems.php',{
-                method : "POST",
-                header : {
-                    'Accept' : 'application/json',
-                    'Content-Type' : 'application/json'
-                },
-                body : JSON.stringify({
-                    CAT_ID : this.state.CAT_ID,
-                    ITEM_NAME : this.state.ITEM_NAME,
-                    ITEM_PRICE : this.state.ITEM_PRICE
+        if(this.state.editFlag){
+            if(this.state.ITEM_NAME != '' && this.state.CAT_ID != 'Select Category') {
+                fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/editItems.php',{
+                    method : "POST",
+                    header : {
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({
+                        CAT_ID : this.state.CAT_ID,
+                        ITEM_ID : this.state.ITEM_ID,
+                        ITEM_NAME : this.state.ITEM_NAME,
+                        ITEM_PRICE : this.state.ITEM_PRICE
+                    })
                 })
-            })
-            .then(function(response){
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then(function(responseJson){
-                if(responseJson){
-                    this.props.navigation.navigate('Items',{
-                        listData : {
+                .then(function(response){
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function(responseJson){
+                    if(responseJson){
+                        this.props.navigation.navigate('Items',{
+                            listData : {
+                                ITEM_ID : this.state.ITEM_ID,
                                 ITEM_NAME : this.state.ITEM_NAME,
                                 CAT_ID : this.state.CAT_ID,
+                                CAT_NAME: this.state.CAT_NAME,
                                 ITEM_PRICE : this.state.ITEM_PRICE
                             }
-                    });
-                }
-            }.bind(this))
-            .catch(function(error){
-                console.error(error);
-            });
+                        });
+                    }
+                }.bind(this))
+                .catch(function(error){
+                    console.error(error);
+                });
+            }else{
+                ToastService("warning", "Fields can not be empty");
+            }
         }else{
-            ToastService("warning", "Fields can not be empty");
+            if(this.state.ITEM_NAME != '' && this.state.CAT_ID != 'Select Category') {
+                fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/createItems.php',{
+                    method : "POST",
+                    header : {
+                        'Accept' : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({
+                        CAT_ID : this.state.CAT_ID,
+                        ITEM_NAME : this.state.ITEM_NAME,
+                        ITEM_PRICE : this.state.ITEM_PRICE
+                    })
+                })
+                .then(function(response){
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(function(responseJson){
+                    if(responseJson){
+                        this.props.navigation.navigate('Items',{
+                            listData : {
+                                ITEM_NAME : this.state.ITEM_NAME,
+                                CAT_ID : this.state.CAT_ID,
+                                CAT_NAME: this.state.CAT_NAME,
+                                ITEM_PRICE : this.state.ITEM_PRICE
+                            }
+                        });
+                    }
+                }.bind(this))
+                .catch(function(error){
+                    console.error(error);
+                });
+            }else{
+                ToastService("warning", "Fields can not be empty");
+            }
         }
     }
-
 
     render() {
         return(

@@ -78,7 +78,7 @@ export default class Login extends React.Component {
         const { username }  = this.state;
         const { password }  = this.state;
 
-        fetch('http://192.168.1.3/React/Native/AwesomeProject/src/server/UserLogin.php', {
+        fetch('http://192.168.1.6/React/Native/AwesomeProject/src/server/UserLogin.php', {
             method : 'POST',
             headers : {
                 'Accept' : 'application/json',
